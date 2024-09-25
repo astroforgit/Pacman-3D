@@ -591,7 +591,7 @@ const main = () => {
         if (pacman.mesh.atePellet === true) {
             ghost.isAfraid = true;
             ghost.becameAfraidTime = now;
-            ghost.material.color.setStyle('white');
+            ghost.material.color.setStyle('white'); 
         }
 
         // Make ghosts not afraid anymore after 10 seconds.
@@ -673,5 +673,5 @@ const main = () => {
         renderHud(renderer, hudCamera, scene);
     });
 };
-w
+ 
 main();

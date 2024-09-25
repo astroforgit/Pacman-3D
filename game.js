@@ -136,7 +136,75 @@ const createWall = (() => {
     };
 })();
 
+const createArrow = (() => {
+    const arrowShape = new THREE.Shape();
+
+    // Define the arrow shape
+    // Start from the tip of the arrowhead
+    arrowShape.moveTo(0, 0.25);  // Move to the top point of the arrowhead
+    arrowShape.lineTo(-0.2, 0);  // Left side of the arrowhead
+    arrowShape.lineTo(-0.1, 0);  // Left base of the arrow shaft
+    arrowShape.lineTo(-0.1, -0.25);  // Bottom of the arrow shaft
+    arrowShape.lineTo(0.1, -0.25);  // Bottom right of the arrow shaft
+    arrowShape.lineTo(0.1, 0);  // Right base of the arrowhead
+    arrowShape.lineTo(0.2, 0);  // Right side of the arrowhead
+    arrowShape.lineTo(0, 0.25);  // Back to the top point of the arrowhead
+
+    // Extrude the shape to make it 3D
+    const extrudeSettings = {
+        depth: 25,  // Length of the arrow (extrude in the Z-axis)
+        bevelEnabled: false,
+        bevelThickness: 0.01,
+        bevelSize: 0.01,
+        bevelOffset: 0,
+        bevelSegments: 3
+    };
+
+    const arrowGeometry = new THREE.ExtrudeGeometry(arrowShape,extrudeSettings);
+
+    
+    const arrowMaterial = new THREE.MeshPhongMaterial( { side: THREE.DoubleSide  } ); // Orange-Red color for the arrow
+
+    return () => {
+        const arrow = new THREE.Mesh(arrowGeometry, arrowMaterial);
+        arrow.scale.set( 0.5, 0.5, 0.0003 );
+        arrow.isArrow = true;
+        return arrow;
+    };
+})();
+
+
 const createDot = (() => {
+    const heartShape = new THREE.Shape();
+
+    // Define the heart shape (using a curve)
+    heartShape.moveTo(0, 0.5);
+    heartShape.bezierCurveTo(0.5, 0.5, 0.75, 0, 0, -0.5);
+    heartShape.bezierCurveTo(-0.75, 0, -0.5, 0.5, 0, 0.5);
+
+    // Create the geometry from the shape (you can extrude it to give depth)
+    const extrudeSettings = {
+        depth: 0.2,  // Adjust depth to your liking
+        bevelEnabled: true,
+        bevelThickness: 0.02,
+        bevelSize: 0.02,
+        bevelOffset: 0,
+        bevelSegments: 5
+    };
+
+    const heartGeometry = new THREE.ExtrudeGeometry(heartShape, extrudeSettings);
+    const heartMaterial = new THREE.MeshPhongMaterial({ color: 0xFF69B4 }); // Pink color
+
+    return () => {
+        const heart = new THREE.Mesh(heartGeometry, heartMaterial);
+        heart.scale.set( 0.5, 0.5, 0.003 );
+        heart.isHeart = true;
+        return heart;
+    };
+})();
+
+
+const createDot1 = (() => {
     const dotGeometry = new THREE.SphereGeometry(DOT_RADIUS);
     const dotMaterial = new THREE.MeshPhongMaterial({ color: 0xFFDAB9 }); // Peach color
 
@@ -179,6 +247,7 @@ const createScene = () => {
 };
 
 const createHudCamera = (map) => {
+    return;
     const halfWidth = (map.right - map.left) / 2;
     const halfHeight = (map.top - map.bottom) / 2;
 
@@ -190,6 +259,7 @@ const createHudCamera = (map) => {
 };
 
 const renderHud = (renderer, hudCamera, scene) => {
+    return;
     // Increase size of pacman and dots in HUD to make them easier to see.
     scene.children.forEach((object) => {
         if (object.isWall !== true) object.scale.set(2.5, 2.5, 2.5);
@@ -199,10 +269,10 @@ const renderHud = (renderer, hudCamera, scene) => {
     renderer.enableScissorTest(true);
     renderer.setScissor(10, 10, 200, 200);
     renderer.setViewport(10, 10, 200, 200);
-    renderer.render(scene, hudCamera);
+    renderer.render(scene, hudCamera); 
     renderer.enableScissorTest(false);
 
-    // Reset scales after rendering HUD.
+    // Reset scales after rendering HUD. 
     scene.children.forEach((object) => object.scale.set(1, 1, 1));
 };
 
@@ -217,7 +287,7 @@ class Pacman {
             const geometry = new THREE.SphereGeometry(PACMAN_RADIUS, 16, 16, offset, Math.PI * 2 - offset * 2);
             geometry.rotateX(Math.PI / 2);
             this.frames.push(geometry);
-        }
+        } 
 
         const pacmanMaterial = new THREE.MeshPhongMaterial({ color: 'yellow', side: THREE.DoubleSide });
         this.mesh = new THREE.Mesh(this.frames[0], pacmanMaterial);
@@ -268,7 +338,7 @@ const wrapObject = (object, map) => {
 // Generic functions
 // =================
 
-const distanceBetween = (() => {
+const distanceBetween = (() => {  
     const difference = new THREE.Vector3();
     return (object1, object2) => {
         // Calculate difference between objects' positions.
@@ -652,7 +722,7 @@ const main = () => {
         renderer.render(scene, camera);
 
         // Render HUD
-        renderHud(renderer, hudCamera, scene);
+        //renderHud(renderer, hudCamera, scene);
     });
 };
  

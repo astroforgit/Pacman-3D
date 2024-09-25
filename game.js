@@ -175,6 +175,58 @@ const createArrow = (() => {
 
 
 const createDot = (() => {
+    const group = new THREE.Group(); // Group to hold all parts of the doll
+
+    // Head
+    const headGeometry = new THREE.SphereGeometry(0.1, 32, 32);  // Sphere for the head
+    const headMaterial = new THREE.MeshPhongMaterial({ color: 0xFFDAB9 });  // Skin color
+    const head = new THREE.Mesh(headGeometry, headMaterial);
+    head.position.set(0, 0.2, 0);  // Position the head on top of the body
+    group.add(head);
+
+    // Body
+    const bodyGeometry = new THREE.SphereGeometry(0.15, 32, 32);  // Slightly larger sphere for the body
+    const bodyMaterial = new THREE.MeshPhongMaterial({ color: 0x87CEEB });  // Light blue for clothing
+    const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+    body.position.set(0, 0, 0);  // Body centered
+    group.add(body);
+
+    // Arms
+    const armGeometry = new THREE.CylinderGeometry(0.03, 0.03, 0.2, 32);  // Cylinders for arms
+    const armMaterial = new THREE.MeshPhongMaterial({ color: 0xFFDAB9 });  // Skin color for arms
+
+    const leftArm = new THREE.Mesh(armGeometry, armMaterial);
+    leftArm.position.set(-0.2, 0, 0);  // Position the left arm
+    leftArm.rotation.z = Math.PI / 2;  // Rotate to make it horizontal
+    group.add(leftArm);
+
+    const rightArm = new THREE.Mesh(armGeometry, armMaterial);
+    rightArm.position.set(0.2, 0, 0);  // Position the right arm
+    rightArm.rotation.z = Math.PI / 2;  // Rotate to make it horizontal
+    group.add(rightArm);
+
+    // Legs
+    const legGeometry = new THREE.CylinderGeometry(0.04, 0.04, 0.25, 32);  // Cylinders for legs
+    const legMaterial = new THREE.MeshPhongMaterial({ color: 0x8B4513 });  // Brown for pants/legs
+
+    const leftLeg = new THREE.Mesh(legGeometry, legMaterial);
+    leftLeg.position.set(-0.08, -0.25, 0);  // Position the left leg below the body
+    group.add(leftLeg);
+
+    const rightLeg = new THREE.Mesh(legGeometry, legMaterial);
+    rightLeg.position.set(0.08, -0.25, 0);  // Position the right leg below the body
+    group.add(rightLeg);
+
+    return () => {
+        const doll = new THREE.Group();  // Create a new group for each doll instance
+        doll.add(group.clone());  // Add the doll to the group
+        doll.rotation.x = Math.PI / 2; 
+        return doll;
+    };
+})();
+
+
+const createHeart = (() => {
     const heartShape = new THREE.Shape();
 
     // Define the heart shape (using a curve)

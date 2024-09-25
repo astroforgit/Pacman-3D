@@ -354,20 +354,7 @@ const main = () => {
     let lost = false;
     let lostTime, wonTime;
 
-    const chompSound = new Audio('pacman_chomp.mp3');
-    chompSound.volume = 0.5;
-    chompSound.loop = true;
-    chompSound.preload = 'auto';
-
-    const levelStartSound = new Audio('pacman_beginning.mp3');
-    levelStartSound.preload = 'auto';
-    levelStartSound.autoplay = true;
-
-    const deathSound = new Audio('pacman_death.mp3');
-    deathSound.preload = 'auto';
-
-    const killSound = new Audio('pacman_eatghost.mp3');
-    killSound.preload = 'auto';
+ 
 
     const remove = [];
 
@@ -433,12 +420,7 @@ const main = () => {
     };
 
     const updatePacman = (delta, now) => {
-        // Play chomp sound if player is moving.
-        if (!won && !lost && (keys['W'] || keys['S'])) {
-            chompSound.play();
-        } else {
-            chompSound.pause();
-        }
+        
 
         // Move if we haven't died or won.
         if (!won && !lost) {
@@ -451,7 +433,7 @@ const main = () => {
             wonTime = now;
 
             showText('You won =D', 1, now);
-            levelStartSound.play();
+          
         }
 
         // Go to next level 4 seconds after winning.
@@ -560,7 +542,7 @@ const main = () => {
         if (cell && cell.isPowerPellet === true && cell.visible === true) {
             removeAt(map, scene, pacman.mesh.position);
             pacman.mesh.atePellet = true;
-            killSound.play();
+            
         }
     };
 
@@ -607,7 +589,7 @@ const main = () => {
             if (ghost.isAfraid === true) {
                 remove.push(ghost);
                 numGhosts -= 1;
-                killSound.play();
+                
             } else {
                 lives -= 1;
                 document.getElementsByClassName('life')[lives].style.display = 'none';
@@ -617,7 +599,7 @@ const main = () => {
 
                 lost = true;
                 lostTime = now;
-                deathSound.play();
+                
             }
         }
     };
@@ -652,7 +634,7 @@ const main = () => {
                     if (possibleTurns.length === 0) throw new Error('A ghost got stuck!');
 
                     const newDirection = possibleTurns[Math.floor(Math.random() * possibleTurns.length)];
-                    ghost.direction.copy(newDirection);
+                    ghost.direction.copy(newDirection); 
 
                     // Snap ghost to center of current cell and start moving in new direction.
                     ghost.position.round().addScaledVector(ghost.direction, delta);

@@ -174,7 +174,7 @@ const createArrow = (() => {
 })();
 
 
-const createDot = (() => {
+const createDoll = (() => {
     const group = new THREE.Group(); // Group to hold all parts of the doll
 
     // Head
@@ -252,6 +252,86 @@ const createHeart = (() => {
         heart.scale.set( 0.5, 0.5, 0.003 );
         heart.isHeart = true;
         return heart;
+    };
+})();
+
+const createDot = (() => {
+    const group = new THREE.Group(); // Group to hold all parts of the dragon
+
+    // Body (elongated sphere)
+    const bodyGeometry = new THREE.SphereGeometry(0.3, 32, 32);  // Elongated body
+    const bodyMaterial = new THREE.MeshPhongMaterial({ color: 0x228B22 });  // Green color for dragon scales
+    const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+    body.scale.set(1.5, 0.8, 0.8);  // Stretch the body to be elongated
+    body.position.set(0, 0, 0);  // Center the body
+    group.add(body);
+
+    // Head (smaller sphere)
+    const headGeometry = new THREE.SphereGeometry(0.15, 32, 32);  // Head as a sphere
+    const headMaterial = new THREE.MeshPhongMaterial({ color: 0x228B22 });  // Same green color for head
+    const head = new THREE.Mesh(headGeometry, headMaterial);
+    head.position.set(0.45, 0.1, 0);  // Position the head in front of the body
+    group.add(head);
+
+    // Eyes (small spheres)
+    const eyeGeometry = new THREE.SphereGeometry(0.03, 16, 16);  // Small spheres for eyes
+    const eyeMaterial = new THREE.MeshPhongMaterial({ color: 0xFFFFFF });  // White for the eyes
+
+    const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+    leftEye.position.set(0.55, 0.15, 0.07);  // Position left eye
+    group.add(leftEye);
+
+    const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+    rightEye.position.set(0.55, 0.15, -0.07);  // Position right eye
+    group.add(rightEye);
+
+    // Wings (planes)
+    const wingGeometry = new THREE.PlaneGeometry(0.4, 0.25);  // Plane geometry for flat wings
+    const wingMaterial = new THREE.MeshPhongMaterial({ color: 0x8B4513, side: THREE.DoubleSide });  // Brown wings
+
+    const leftWing = new THREE.Mesh(wingGeometry, wingMaterial);
+    leftWing.position.set(-0.2, 0.2, 0.25);  // Position left wing
+    leftWing.rotation.set(Math.PI / 6, 0, Math.PI / 2);  // Rotate the wing
+    group.add(leftWing);
+
+    const rightWing = new THREE.Mesh(wingGeometry, wingMaterial);
+    rightWing.position.set(-0.2, 0.2, -0.25);  // Position right wing
+    rightWing.rotation.set(Math.PI / 6, 0, -Math.PI / 2);  // Rotate the wing
+    group.add(rightWing);
+
+    // Tail (cylinder)
+    const tailGeometry = new THREE.CylinderGeometry(0.05, 0.1, 0.5, 32);  // Long cylinder for tail
+    const tailMaterial = new THREE.MeshPhongMaterial({ color: 0x228B22 });  // Green tail
+    const tail = new THREE.Mesh(tailGeometry, tailMaterial);
+    tail.position.set(-0.5, -0.1, 0);  // Position the tail behind the body
+    tail.rotation.set(0, 0, Math.PI / 6);  // Slight angle for the tail
+    group.add(tail);
+
+    // Tail tip (tetrahedron)
+    const tailTipGeometry = new THREE.TetrahedronGeometry(0.1);  // Tetrahedron for spiky tail tip
+    const tailTip = new THREE.Mesh(tailTipGeometry, tailMaterial);
+    tailTip.position.set(-0.75, -0.15, 0);  // Attach to end of the tail
+    group.add(tailTip);
+
+    // Legs (short cylinders)
+    const legGeometry = new THREE.CylinderGeometry(0.05, 0.05, 0.2, 32);  // Legs as cylinders
+    const legMaterial = new THREE.MeshPhongMaterial({ color: 0x228B22 });  // Green legs
+
+    const leftLeg = new THREE.Mesh(legGeometry, legMaterial);
+    leftLeg.position.set(0.15, -0.25, 0.15);  // Position left leg
+    group.add(leftLeg);
+
+    const rightLeg = new THREE.Mesh(legGeometry, legMaterial);
+    rightLeg.position.set(0.15, -0.25, -0.15);  // Position right leg
+    group.add(rightLeg);
+
+    // Add all parts to the group and return it
+    return () => {
+        const dragon = new THREE.Group(); 
+         // Create a new group for each dragon instance
+         dragon.rotation.x = Math.PI / 2; 
+        dragon.add(group.clone());  // Add the cloned dragon parts to the group
+        return dragon;
     };
 })();
 

@@ -11,15 +11,17 @@
         <div id="help-dialog" class="dialog">
             <h2>CONTROLS</h2>
 
-            <p>WASD: Use W/S to move forward/backward and A/D to turn left/right.</p>
-
-            <p>After you collect all of the dots, the game will start over but pacman and the ghosts will get a little bit faster!<p>
+            <p>WASD: Move Pacman</p>
+            <p>Q / E: Move DOWN / UP (Z-Axis)</p>
+            <p>R / F: Move PAST / FUTURE (W-Axis)</p>
+            <p>Collect all dots to win!</p>
 
             <button onclick="var dialog = document.getElementById('help-dialog'); dialog.style.display = 'none';">Close</button>
         </div>
 
         <script src="three.js"></script>
         <script src="helvetiker_regular.typeface.js"></script>
+        <script src="maze4d.js"></script>
         <script src="game.js"></script>
     </body>
 </html>

@@ -243,6 +243,21 @@ const main = () => {
     const keys = createKeyState();
     const renderer = createRenderer();
     const { scene, light } = createScene();
+
+    // Mouse Control Logic
+    // -------------------
+    renderer.domElement.addEventListener('click', () => {
+        renderer.domElement.requestPointerLock();
+    });
+
+    const mouseSensitivity = 0.002;
+    document.addEventListener('mousemove', (event) => {
+        if (document.pointerLockElement === renderer.domElement) {
+            camera.rotation.y -= event.movementX * mouseSensitivity;
+            camera.rotation.x -= event.movementY * mouseSensitivity;
+            camera.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, camera.rotation.x));
+        }
+    });
     
     // Initialize 4D Maze
     const mazeWidth = 6, mazeHeight = 6, mazeDepth = 6, mazeWDepth = 4;
@@ -269,36 +284,38 @@ const main = () => {
 
     // Movement State
     const velocity = new THREE.Vector3();
-    const euler = new THREE.Euler(0, 0, 0, 'YXZ');
+    camera.rotation.order = 'YXZ'; // Yaw (Y) first, then Pitch (X)
 
     const updatePacman = (delta, now) => {
-        // Rotation
+        // Rotation Keys
         const lookSpeed = 2.0;
         
         // A/D for Yaw (Left/Right rotation)
-        if (keys['A']) euler.y += lookSpeed * delta;
-        if (keys['D']) euler.y -= lookSpeed * delta;
+        if (keys['A']) camera.rotation.y += lookSpeed * delta;
+        if (keys['D']) camera.rotation.y -= lookSpeed * delta;
         
         // Q/E for Pitch (Up/Down rotation)
-        if (keys['Q']) euler.x += lookSpeed * delta;
-        if (keys['E']) euler.x -= lookSpeed * delta;
+        if (keys['Q']) camera.rotation.x += lookSpeed * delta;
+        if (keys['E']) camera.rotation.x -= lookSpeed * delta;
 
-        // Keep Arrow Keys as secondary look controls
-        if (keys['ARROWLEFT']) euler.y += lookSpeed * delta;
-        if (keys['ARROWRIGHT']) euler.y -= lookSpeed * delta;
-        if (keys['ARROWUP']) euler.x += lookSpeed * delta;
-        if (keys['ARROWDOWN']) euler.x -= lookSpeed * delta;
+        // Keep Arrow Keys
+        if (keys['ARROWLEFT']) camera.rotation.y += lookSpeed * delta;
+        if (keys['ARROWRIGHT']) camera.rotation.y -= lookSpeed * delta;
+        if (keys['ARROWUP']) camera.rotation.x += lookSpeed * delta;
+        if (keys['ARROWDOWN']) camera.rotation.x -= lookSpeed * delta;
         
-        euler.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, euler.x));
+        camera.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, camera.rotation.x));
         
-        camera.quaternion.setFromEuler(euler);
+        // Sync Pacman mesh to camera (optional, mainly for collision origin)
+        pacman.mesh.rotation.copy(camera.rotation);
 
         // Movement Direction relative to Camera
         const moveDir = new THREE.Vector3();
         if (keys['W']) moveDir.z -= 1;
         if (keys['S']) moveDir.z += 1;
 
-        moveDir.applyQuaternion(camera.quaternion);
+        // Apply rotation to movement vector to align with view
+        moveDir.applyEuler(camera.rotation);
         moveDir.normalize();
 
         const intendedPos = pacman.mesh.position.clone().addScaledVector(moveDir, PACMAN_SPEED * delta);
@@ -306,8 +323,6 @@ const main = () => {
         // Check Collision
         if (!checkCollision(intendedPos, maze, currentW)) {
             pacman.mesh.position.copy(intendedPos);
-        } else {
-            // Slide along axes? Simple stop for now.
         }
 
         // Camera Follows Head
